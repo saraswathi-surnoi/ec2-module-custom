@@ -1,10 +1,10 @@
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["794383793382"]
+  owners      = ["794383793382"] 
 
   filter {
     name   = "name"
-    values = ["ubuntu"]
+    values = ["ubuntu-saru"]
   }
 
   filter {
@@ -17,6 +17,7 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 }
+
 data "aws_vpc" "default" {
   default = true
 }

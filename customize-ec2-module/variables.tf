@@ -1,15 +1,11 @@
-##########################################
-# 🔑 Key Pair Configuration
-##########################################
+
 variable "key_pair_name" {
   description = "EC2 key pair name"
   type        = string
   default     = "fusion"
 }
 
-##########################################
-# 🏷️ Common EC2 Tags
-##########################################
+
 variable "ec2_tags" {
   description = "Common tags for all EC2 instances"
   type = map(any)
@@ -23,18 +19,14 @@ variable "ec2_tags" {
   }
 }
 
-##########################################
-# ⚙️ Instance Type List
-##########################################
+
 variable "instance_types" {
   description = "List of instance types: first is for Jenkins, others for backend servers"
   type        = list(string)
   default     = ["t3.small", "t3.micro"]
 }
 
-##########################################
-# 💻 EC2 Instances Definition (Loop)
-##########################################
+
 variable "instances" {
   description = "Map defining all EC2 instances to be created dynamically"
   type = map(object({
@@ -65,9 +57,7 @@ variable "instances" {
   }
 }
 
-##########################################
-# 🧱 Security Groups Definition (Loop)
-##########################################
+
 variable "security_groups" {
   description = "Map defining all security groups dynamically"
   type = map(object({
@@ -141,9 +131,7 @@ variable "security_groups" {
   }
 }
 
-##########################################
-# 🏷️ Common Security Group Tags
-##########################################
+
 variable "security_group_tag" {
   description = "Common tags for all Security Groups"
   type        = map(any)
