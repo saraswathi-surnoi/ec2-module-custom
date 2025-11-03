@@ -8,9 +8,11 @@ module "security_groups" {
     description = each.value.description
     tags        = var.security_group_tag
   }
+
   security_group_ingress = each.value.ingress
   security_group_egress  = each.value.egress
 }
+
 module "ec2_instances" {
   source   = "./ec2-module"
   for_each = var.instances
@@ -19,17 +21,20 @@ module "ec2_instances" {
     ami           = data.aws_ami.ubuntu.id
     instance_type = each.value.instance_type
     key_name      = var.key_pair_name
-    user_data     = file("${path.module}/${each.value.user_data}")
 
+    user_data = file("${path.module}/${each.value.user_data}")
+
+    # Attach correct SG from same VPC
     vpc_security_group_ids = [
       module.security_groups[each.value.security_group_ref].security_group_id
     ]
 
-    subnet_id = local.selected_subnet_id  # ✅ use correct subnet
+    # Automatically selected subnet from same VPC
+    subnet_id = local.selected_subnet_id
+
     tags = merge(var.ec2_tags, {
       Name = each.key
       Role = each.value.role
     })
   }
 }
-

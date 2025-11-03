@@ -1,6 +1,7 @@
+# Fetch latest Ubuntu AMI from your account
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["361769585646"]  # Your AWS account ID (owner of the AMI)
+  owners      = ["361769585646"]  # Your AWS account ID
 
   filter {
     name   = "name"
@@ -18,11 +19,12 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+# Fetch the selected VPC
 data "aws_vpc" "selected" {
   id = var.vpc_id
 }
 
-# ✅ Add this new block to automatically fetch subnets for your VPC
+# Fetch all subnets in that VPC
 data "aws_subnets" "selected" {
   filter {
     name   = "vpc-id"
