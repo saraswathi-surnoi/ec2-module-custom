@@ -1,7 +1,7 @@
 resource "aws_security_group" "security_group" {
   name        = var.security_group.name
   description = var.security_group.description
-  vpc_id      = var.vpc_id    # ✅ your provided VPC
+  vpc_id      = var.vpc_id    
   tags        = var.security_group.tags
 }
 

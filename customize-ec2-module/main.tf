@@ -23,21 +23,17 @@ module "ec2_instances" {
     ami           = data.aws_ami.ubuntu.id
     instance_type = each.value.instance_type
     key_name      = var.key_pair_name
-
-    
-    user_data = file("${path.module}/${each.value.user_data}")
+    user_data     = file("${path.module}/${each.value.user_data}")
 
     vpc_security_group_ids = [
       module.security_groups[each.value.security_group_ref].security_group_id
     ]
 
-    
-    subnet_id = null
-
-    # ✅ Add consistent tags
+    subnet_id = var.subnet_id  # ✅ use correct subnet
     tags = merge(var.ec2_tags, {
       Name = each.key
       Role = each.value.role
     })
   }
 }
+

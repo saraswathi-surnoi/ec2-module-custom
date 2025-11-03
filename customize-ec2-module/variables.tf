@@ -59,6 +59,18 @@ variable "vpc_id" {
   default     = "vpc-0086f34dccaccfc5c"
 }
 
+variable "vpc_id" {
+  description = "VPC ID where resources will be created"
+  type        = string
+  default     = "vpc-0de21d2f03e302965"
+}
+
+variable "subnet_id" {
+  description = "Subnet ID to launch EC2 instances in"
+  type        = string
+  default     = "subnet-0fb6223e317ab893d" 
+}
+
 variable "security_groups" {
   description = "Map defining all security groups dynamically"
   type = map(object({
