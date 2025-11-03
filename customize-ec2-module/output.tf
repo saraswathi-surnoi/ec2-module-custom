@@ -1,19 +1,25 @@
+# ==========================
+# EC2 MODULE OUTPUTS
+# ==========================
 
-# Key Pair
-output "key_name" {
-  description = "Key pair name used for EC2 instances"
-  value       = var.key_pair_name
+output "instance_id" {
+  description = "Instance ID of the EC2 instance"
+  value       = aws_instance.ec2-instances.id
 }
 
-# Public IPs
-output "public_ips" {
-  description = "Public IPs of all EC2 instances"
-  value       = [for instance in module.ec2_instances : instance.public_ip]
+output "private_ip" {
+  description = "Private IP of the EC2 instance"
+  value       = aws_instance.ec2-instances.private_ip
 }
 
-# Private IPs
-output "private_ips" {
-  description = "Private IPs of all EC2 instances"
-  value       = [for instance in module.ec2_instances : instance.private_ip]
+output "public_ip" {
+  description = "Public IP of the EC2 instance"
+  value       = aws_instance.ec2-instances.public_ip
 }
+
+output "instance_name" {
+  description = "Name tag of the EC2 instance"
+  value       = aws_instance.ec2-instances.tags["Name"]
+}
+
 
