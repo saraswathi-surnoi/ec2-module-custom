@@ -1,34 +1,33 @@
-variable "security_group" {
-  type = object({
-    name = string
-    description = string
-    tags = map(string)
-  })
-}
-
 variable "vpc_id" {
-  description = "VPC ID where the security group will be created"
+  description = "VPC ID where SG will be created"
   type        = string
 }
 
+variable "security_group" {
+  description = "Security group basic info"
+  type = object({
+    name        = string
+    description = string
+    tags        = map(string)
+  })
+}
+
 variable "security_group_ingress" {
-  type = map(object({
-    cidr_ipv4 = string
-    from_port = optional(number) 
-    ip_protocol = string
-    to_port = optional(number) 
+  description = "Ingress rules for SG"
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
 }
 
 variable "security_group_egress" {
-  type = map(object({
-    cidr_ipv4   = string
-    ip_protocol = string
+  description = "Egress rules for SG"
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
-  default = {
-    allow_all = {
-      cidr_ipv4   = "0.0.0.0/0"
-      ip_protocol = "-1"
-    }
-  }
 }
