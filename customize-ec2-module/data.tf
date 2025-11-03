@@ -1,10 +1,11 @@
+
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["794383793382"] 
+  owners      = ["361769585646"]  # Your AWS account ID (owner of the AMI)
 
   filter {
     name   = "name"
-    values = ["ubuntu-saru"]
+    values = ["logistics-mot-ubuntu-base-v1.0.0"]
   }
 
   filter {
@@ -18,6 +19,6 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-data "aws_vpc" "default" {
-  default = true
+data "aws_vpc" "selected" {
+  id = var.vpc_id
 }

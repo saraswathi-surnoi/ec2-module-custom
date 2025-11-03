@@ -1,8 +1,7 @@
-
 variable "key_pair_name" {
-  description = "EC2 key pair name"
+  description = "Existing EC2 key pair name to use"
   type        = string
-  default     = "fusion"
+  default     = "logistics-mot-kp" # Your existing key pair
 }
 
 
@@ -10,12 +9,9 @@ variable "ec2_tags" {
   description = "Common tags for all EC2 instances"
   type = map(any)
   default = {
-    Name = "fusioniq"
-    Project     = "fusion"
-    Environment = "dev"
-    Component   = "CICD"
-    Managed_By  = "saraswathi"
-    Terraform   = true
+    Project     = "logistics"
+    ManagedBy   = "Terraform"
+    Owner       = "DevOpsTeam"
   }
 }
 
@@ -35,6 +31,7 @@ variable "instances" {
     security_group_ref = string
     role               = string
   }))
+
   default = {
     jenkins-master = {
       instance_type      = "t3.small"
@@ -42,12 +39,14 @@ variable "instances" {
       security_group_ref = "jenkins_sg"
       role               = "JenkinsMaster"
     }
+
     backend-1 = {
       instance_type      = "t3.micro"
       user_data          = "user_data/user_data.backend.sh"
       security_group_ref = "backend_sg"
       role               = "Backend"
     }
+
     backend-2 = {
       instance_type      = "t3.micro"
       user_data          = "user_data/user_data.backend.sh"
@@ -55,6 +54,12 @@ variable "instances" {
       role               = "Backend"
     }
   }
+}
+
+variable "vpc_id" {
+  description = "VPC ID where resources will be created"
+  type        = string
+  default     = "vpc-0086f34dccaccfc5c"
 }
 
 
@@ -66,7 +71,9 @@ variable "security_groups" {
     ingress     = map(any)
     egress      = map(any)
   }))
+
   default = {
+    # Jenkins Security Group
     jenkins_sg = {
       name        = "jenkins-sg"
       description = "Allow SSH and Jenkins ports"
@@ -92,9 +99,10 @@ variable "security_groups" {
       }
     }
 
+    # Backend Security Group (Restricted to ports 22 & 8080)
     backend_sg = {
       name        = "backend-sg"
-      description = "Allow SSH and backend ports"
+      description = "Allow SSH and backend port 8080 only"
       ingress = {
         ssh = {
           cidr_ipv4   = "0.0.0.0/0"
@@ -106,18 +114,6 @@ variable "security_groups" {
           cidr_ipv4   = "0.0.0.0/0"
           from_port   = 8080
           to_port     = 8080
-          ip_protocol = "tcp"
-        }
-        backend_8761 = {
-          cidr_ipv4   = "0.0.0.0/0"
-          from_port   = 8761
-          to_port     = 8761
-          ip_protocol = "tcp"
-        }
-        backend_8082_8087 = {
-          cidr_ipv4   = "0.0.0.0/0"
-          from_port   = 8082
-          to_port     = 8087
           ip_protocol = "tcp"
         }
       }
@@ -136,10 +132,9 @@ variable "security_group_tag" {
   description = "Common tags for all Security Groups"
   type        = map(any)
   default = {
-    Project     = "fusion"
-    Component   = "CICD"
-    Managed_By  = "saraswathi"
-    Environment = "development"
+    Project     = "logistics"
+    ManagedBy   = "Terraform"
+    Owner       = "DevOpsTeam"
     Terraform   = true
   }
 }
