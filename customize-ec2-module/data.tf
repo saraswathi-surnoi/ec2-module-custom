@@ -1,7 +1,7 @@
-# Fetch latest Ubuntu AMI from your account
+# Fetch latest Ubuntu AMI
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["361769585646"]  # Your AWS account ID
+  owners      = ["361769585646"]
 
   filter {
     name   = "name"
@@ -19,24 +19,26 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-# Fetch subnets ONLY from your specific VPC and availability zones
+# Get the specific VPC
+data "aws_vpc" "selected" {
+  id = var.vpc_id
+}
+
+# Get subnets ONLY from that VPC and region
 data "aws_subnets" "selected" {
   filter {
     name   = "vpc-id"
-    values = [var.vpc_id]
+    values = [data.aws_vpc.selected.id]
   }
 
+  # Ensure only "available" subnets
   filter {
     name   = "state"
     values = ["available"]
   }
-
-  # Optional: pick only subnets in your current region (extra safety)
-  # filter {
-  #   name   = "availability-zone"
-  #   values = ["ap-south-1a", "ap-south-1b"]
-  # }
 }
 
-
-
+# Fetch detailed subnet info
+data "aws_subnet" "first" {
+  id = element(data.aws_subnets.selected.ids, 0)
+}
