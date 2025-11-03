@@ -8,13 +8,9 @@ module "security_groups" {
     description = each.value.description
     tags        = var.security_group_tag
   }
-
   security_group_ingress = each.value.ingress
   security_group_egress  = each.value.egress
 }
-
-
-
 module "ec2_instances" {
   source   = "./ec2-module"
   for_each = var.instances
@@ -29,7 +25,7 @@ module "ec2_instances" {
       module.security_groups[each.value.security_group_ref].security_group_id
     ]
 
-    subnet_id = var.subnet_id  # ✅ use correct subnet
+    subnet_id = local.selected_subnet_id  # ✅ use correct subnet
     tags = merge(var.ec2_tags, {
       Name = each.key
       Role = each.value.role
