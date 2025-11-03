@@ -31,7 +31,6 @@ module "ec2_instances" {
 
     # Automatically selected subnet from same VPC
     subnet_id = local.selected_subnet_id
-
     tags = merge(var.ec2_tags, {
       Name = each.key
       Role = each.value.role
