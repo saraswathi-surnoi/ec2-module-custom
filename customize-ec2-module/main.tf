@@ -18,7 +18,7 @@ module "ec2_instances" {
   for_each = var.instances
 
   ami_id            = data.aws_ami.ubuntu.id
-  subnet_id         = local.selected_subnet_id
+  subnet_id = element(data.aws_subnets.public_subnets.ids, 0)
   instance_type     = each.value.instance_type
   key_pair_name     = var.key_pair_name
   security_group_id = module.security_groups[each.value.security_group_ref].security_group_id
