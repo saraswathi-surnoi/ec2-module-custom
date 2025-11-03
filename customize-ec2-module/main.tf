@@ -1,8 +1,12 @@
+##################################
+# SECURITY GROUP MODULE
+##################################
 module "security_groups" {
   source   = "./sg-module"
   for_each = var.security_groups
 
   vpc_id = var.vpc_id 
+
   security_group = {
     name        = each.value.name
     description = each.value.description
@@ -13,18 +17,19 @@ module "security_groups" {
   security_group_egress  = each.value.egress
 }
 
+##################################
+# EC2 MODULE
+##################################
 module "ec2_instances" {
-  source = "./ec2-module"
+  source   = "./ec2-module"
   for_each = var.instances
 
   ami_id            = data.aws_ami.ubuntu.id
-  subnet_id = element(data.aws_subnets.public_subnets.ids, 0)
+  subnet_id         = element(data.aws_subnets.public_subnets.ids, 0)
   instance_type     = each.value.instance_type
   key_pair_name     = var.key_pair_name
   security_group_id = module.security_groups[each.value.security_group_ref].security_group_id
-  user_data         = each.value.user_data
+  user_data         = file(each.value.user_data)
   tags              = var.ec2_tags
   instance_name     = each.key
 }
-
-

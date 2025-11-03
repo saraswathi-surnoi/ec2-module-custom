@@ -1,10 +1,8 @@
 variable "vpc_id" {
-  description = "VPC ID where SG will be created"
-  type        = string
+  type = string
 }
 
 variable "security_group" {
-  description = "Security group basic info"
   type = object({
     name        = string
     description = string
@@ -13,7 +11,6 @@ variable "security_group" {
 }
 
 variable "security_group_ingress" {
-  description = "Ingress rules for SG"
   type = list(object({
     from_port   = number
     to_port     = number
@@ -23,7 +20,6 @@ variable "security_group_ingress" {
 }
 
 variable "security_group_egress" {
-  description = "Egress rules for SG"
   type = list(object({
     from_port   = number
     to_port     = number
