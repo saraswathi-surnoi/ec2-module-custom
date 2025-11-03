@@ -1,11 +1,11 @@
 
 resource "aws_instance" "ec2-instances" {
-  ami                    = data.aws_ami.ubuntu.id    # ✅ using AMI from data.tf
+  ami                    = var.ami_id
   instance_type          = var.instance_type
-  subnet_id              = element(data.aws_subnets.selected.ids, 0)
+  subnet_id              = var.subnet_id
   vpc_security_group_ids = [var.security_group_id]
   key_name               = var.key_pair_name
-  user_data              = file(var.user_data)        # ✅ taking path from variable map
+  user_data              = file(var.user_data)
 
   tags = merge(
     var.tags,
@@ -14,4 +14,5 @@ resource "aws_instance" "ec2-instances" {
     }
   )
 }
+
 
