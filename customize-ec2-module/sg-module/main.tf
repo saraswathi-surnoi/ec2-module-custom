@@ -46,10 +46,3 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
   cidr_ipv4         = each.value.cidr_ipv4
   ip_protocol       = each.value.ip_protocol
 }
-
-###############################################
-# ✅ Outputs
-###############################################
-output "security_group_id" {
-  value = aws_security_group.security_group.id
-}

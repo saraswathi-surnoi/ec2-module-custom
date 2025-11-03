@@ -1,5 +1,4 @@
 
-
 # Key Pair
 output "key_name" {
   description = "Key pair name used for EC2 instances"
