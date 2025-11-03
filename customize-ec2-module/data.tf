@@ -19,23 +19,24 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-# Get your selected VPC
-data "aws_vpc" "selected" {
-  id = var.vpc_id
-}
-
-# Get subnets ONLY from that specific VPC
+# Fetch subnets ONLY from your specific VPC and availability zones
 data "aws_subnets" "selected" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.selected.id]
+    values = [var.vpc_id]
   }
 
-  # Optional: ensure it uses your active region only
   filter {
     name   = "state"
     values = ["available"]
   }
+
+  # Optional: pick only subnets in your current region (extra safety)
+  # filter {
+  #   name   = "availability-zone"
+  #   values = ["ap-south-1a", "ap-south-1b"]
+  # }
 }
+
 
 
