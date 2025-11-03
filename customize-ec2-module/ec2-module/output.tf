@@ -1,25 +1,15 @@
-# ==========================
-# EC2 MODULE OUTPUTS
-# ==========================
-
 output "instance_id" {
-  description = "Instance ID of the EC2 instance"
-  value       = aws_instance.ec2-instances.id
+  value = aws_instance.ec2_instance.id
 }
 
 output "private_ip" {
-  description = "Private IP of the EC2 instance"
-  value       = aws_instance.ec2-instances.private_ip
+  value = aws_instance.ec2_instance.private_ip
 }
 
 output "public_ip" {
-  description = "Public IP of the EC2 instance"
-  value       = aws_instance.ec2-instances.public_ip
+  value = aws_instance.ec2_instance.public_ip
 }
 
 output "instance_name" {
-  description = "Name tag of the EC2 instance"
-  value       = aws_instance.ec2-instances.tags["Name"]
+  value = aws_instance.ec2_instance.tags["Name"]
 }
-
-
