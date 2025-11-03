@@ -1,4 +1,4 @@
-# Fetch latest Ubuntu AMI (from your custom AMI owner/account)
+# Fetch latest Ubuntu AMI
 data "aws_ami" "ubuntu" {
   most_recent = true
   owners      = ["361769585646"]
@@ -24,26 +24,20 @@ data "aws_vpc" "selected" {
   id = var.vpc_id
 }
 
-# Get only public subnets from that VPC (by tag or name)
-data "aws_subnets" "public" {
+# ✅ Fetch all *public* subnets in that VPC
+data "aws_subnets" "public_subnets" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.selected.id]
   }
 
-  # Optional filter: if your subnets are tagged like "public-subnet-1a"
   filter {
     name   = "tag:Name"
-    values = ["*public*"]
+    values = ["*public*"]   # assumes your subnet names include "public"
   }
 
   filter {
     name   = "state"
     values = ["available"]
   }
-}
-
-# Get the first public subnet
-data "aws_subnet" "first_public" {
-  id = element(data.aws_subnets.public.ids, 0)
 }
