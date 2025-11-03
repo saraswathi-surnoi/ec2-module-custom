@@ -1,3 +1,4 @@
+
 variable "vpc_id" {
   description = "VPC ID where resources will be created"
   type        = string
@@ -10,6 +11,32 @@ variable "key_pair_name" {
   default     = "logistics-mot-kp"
 }
 
+# ---------------------------
+# Common Tags
+# ---------------------------
+variable "security_group_tag" {
+  description = "Common tags for all security groups"
+  type        = map(string)
+  default = {
+    Project   = "logistics"
+    ManagedBy = "Terraform"
+    Owner     = "DevOpsTeam"
+  }
+}
+
+variable "ec2_tags" {
+  description = "Common EC2 instance tags"
+  type        = map(string)
+  default = {
+    Project   = "logistics"
+    ManagedBy = "Terraform"
+    Owner     = "DevOpsTeam"
+  }
+}
+
+# ---------------------------
+# Security Groups
+# ---------------------------
 variable "security_groups" {
   description = "Map of security group configurations"
   type = map(object({
@@ -28,34 +55,96 @@ variable "security_groups" {
       cidr_blocks = list(string)
     }))
   }))
-}
 
-variable "instances" {
-  description = "Map of EC2 instance configurations"
-  type = map(object({
-    instance_type        = string
-    role                 = string
-    user_data            = string
-    security_group_ref   = string
-  }))
-}
-
-variable "security_group_tag" {
-  description = "Common tags for all security groups"
-  type        = map(string)
   default = {
-    Project = "logistics"
-    ManagedBy   = "Terraform"
-    Owner       = "DevOpsTeam"
+    jenkins_securitygroup = {
+      name        = "jenkins-securitygroup"
+      description = "Allow SSH and Jenkins ports"
+      ingress = [
+        {
+          from_port   = 22
+          to_port     = 22
+          protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+        },
+        {
+          from_port   = 8080
+          to_port     = 8080
+          protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+        }
+      ]
+      egress = [
+        {
+          from_port   = 0
+          to_port     = 0
+          protocol    = "-1"
+          cidr_blocks = ["0.0.0.0/0"]
+        }
+      ]
+    }
+
+    backend_securitygroup = {
+      name        = "backend-securitygroup"
+      description = "Allow SSH and backend port 8080"
+      ingress = [
+        {
+          from_port   = 22
+          to_port     = 22
+          protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+        },
+        {
+          from_port   = 8080
+          to_port     = 8080
+          protocol    = "tcp"
+          cidr_blocks = ["0.0.0.0/0"]
+        }
+      ]
+      egress = [
+        {
+          from_port   = 0
+          to_port     = 0
+          protocol    = "-1"
+          cidr_blocks = ["0.0.0.0/0"]
+        }
+      ]
+    }
   }
 }
 
-variable "ec2_tags" {
-  description = "Common EC2 instance tags"
-  type        = map(string)
+# ---------------------------
+# EC2 Instances
+# ---------------------------
+variable "instances" {
+  description = "Map of EC2 instance configurations"
+  type = map(object({
+    instance_type      = string
+    role               = string
+    user_data          = string
+    security_group_ref = string
+  }))
+
   default = {
-    Project = "logistics"
-    ManagedBy   = "Terraform"
-    Owner       = "DevOpsTeam"
+    jenkins-master = {
+      instance_type       = "t3.small"
+      role                = "JenkinsMaster"
+      user_data           = "user_data/user_data.jenkins.sh"
+      security_group_ref  = "jenkins_securitygroup"
+    }
+
+    backend-1 = {
+      instance_type       = "t3.micro"
+      role                = "Backend"
+      user_data           = "user_data/user_data.backend.sh"
+      security_group_ref  = "backend_securitygroup"
+    }
+
+    backend-2 = {
+      instance_type       = "t3.micro"
+      role                = "Backend"
+      user_data           = "user_data/user_data.backend.sh"
+      security_group_ref  = "backend_securitygroup"
+    }
   }
 }
