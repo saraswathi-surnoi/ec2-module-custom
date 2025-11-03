@@ -1,30 +1,12 @@
-
-
-
-
-# ✅ Security Group Resource
 resource "aws_security_group" "security_group" {
-  name        = "${var.security_group.name}-${substr(uuid(), 0, 4)}"
+  name        = var.security_group.name
   description = var.security_group.description
-  vpc_id      = var.vpc_id
-
-  tags = merge(
-    var.security_group.tags,
-    {
-      CreatedBy = "Terraform"
-      Name      = var.security_group.name
-    }
-  )
-
-  lifecycle {
-    create_before_destroy = true
-  }
+  vpc_id      = var.vpc_id    # ✅ your provided VPC
+  tags        = var.security_group.tags
 }
 
-# ✅ Ingress Rules
 resource "aws_vpc_security_group_ingress_rule" "allow_http_ipv4" {
-  for_each = var.security_group_ingress
-
+  for_each          = var.security_group_ingress
   security_group_id = aws_security_group.security_group.id
   cidr_ipv4         = each.value.cidr_ipv4
   ip_protocol       = each.value.ip_protocol
@@ -32,11 +14,13 @@ resource "aws_vpc_security_group_ingress_rule" "allow_http_ipv4" {
   to_port           = try(each.value.to_port, null)
 }
 
-# ✅ Egress Rules
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
-  for_each = var.security_group_egress
-
+  for_each          = var.security_group_egress
   security_group_id = aws_security_group.security_group.id
   cidr_ipv4         = each.value.cidr_ipv4
   ip_protocol       = each.value.ip_protocol
+}
+
+output "security_group_id" {
+  value = aws_security_group.security_group.id
 }

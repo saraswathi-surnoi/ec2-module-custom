@@ -1,12 +1,8 @@
-###############################################
-# ✅ Security Groups Module
-###############################################
 module "security_groups" {
   source   = "./sg-module"
   for_each = var.security_groups
 
-  # ✅ Pass VPC ID directly (provided in variables.tf)
-  vpc_id = var.vpc_id
+  vpc_id = var.vpc_id  # ✅ MUST be here
 
   security_group = {
     name        = each.value.name
@@ -17,6 +13,7 @@ module "security_groups" {
   security_group_ingress = each.value.ingress
   security_group_egress  = each.value.egress
 }
+
 
 ###############################################
 # ✅ EC2 Instances Module
