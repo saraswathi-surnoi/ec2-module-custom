@@ -6,6 +6,11 @@ variable "security_group" {
   })
 }
 
+variable "vpc_id" {
+  description = "VPC ID where the security group will be created"
+  type        = string
+}
+
 variable "security_group_ingress" {
   type = map(object({
     cidr_ipv4 = string

@@ -1,12 +1,6 @@
-###############################################
-# ✅ Security Group Module (Fixed Version)
-###############################################
 
-# Use existing VPC (from root module)
-variable "vpc_id" {
-  description = "VPC ID to associate security groups with"
-  type        = string
-}
+
+
 
 # ✅ Security Group Resource
 resource "aws_security_group" "security_group" {
