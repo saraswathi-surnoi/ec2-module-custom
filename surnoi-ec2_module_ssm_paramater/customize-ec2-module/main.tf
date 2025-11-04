@@ -37,7 +37,6 @@ module "ec2_instances" {
   var.ec2_tags,
   {
     Name  = each.key
-    Role  = "jenkins-agent"
     Label = lookup(each.value, "label", "generic")
     Env   = var.environment
   }
